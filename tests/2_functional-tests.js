@@ -86,6 +86,7 @@ suite('Functional Tests', function() {
 		'Viewing the 10 most recent threads with 3 replies each: GET request to /api/threads/{board}',
 		() => {
       this.timeout(3000)
+      
 			test('viewing 10 threads ', async () => {
 				const res = await chai.request(server).get(threadsRoute);
 				assert.equal(res.status, 200, 'must be a successful request');
@@ -135,7 +136,8 @@ suite('Functional Tests', function() {
 				assert.isNumber(replycount, 'replycount must be a number');
 				assert.isArray(replies, 'replies must be an array');
 			});
-		});
+      
+		}); 
 
 	suite(
 		'Deleting a thread with the incorrect password: DELETE request to /api/threads/{board} with an invalid delete_password',
@@ -274,7 +276,9 @@ suite('Functional Tests', function() {
 			assert.equal(res.status, 200, 'must be a successful request');
 			assert.equal(res.type, 'application/json', 'response must be json');
 			assert.isObject(res.body, 'body must be an object');
-			const reply = res.body;
+      const { replies, replycount, bumped_on } = res.body
+      assert.equal(replies.length, replycount, "replies length must be equal to replycount")
+			const reply = replies[0];
 			assert.isObject(reply, 'reply must be an object');
 			assert.property(reply, '_id', 'reply must have a _id property');
 			assert.property(
@@ -292,6 +296,7 @@ suite('Functional Tests', function() {
 				'text must be equal to what was requested'
 			);
 			assert.isString(created_on, 'created_on must be a string');
+      assert.equal(created_on, bumped_on, "reply's created_on must match thread's bumped_on")
 		});
 
 		after(async () => {
