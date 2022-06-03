@@ -21,7 +21,15 @@ const ThreadSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true 
+  },
+  createdAt: {
+    type: Date,
+    default: new Date()
+  },
+  updatedAt: {
+    type: Date,
+    default: new Date()
   }
-}, { timestamps: true })
+})
 
 module.exports = mongoose.model('Thread', ThreadSchema)
